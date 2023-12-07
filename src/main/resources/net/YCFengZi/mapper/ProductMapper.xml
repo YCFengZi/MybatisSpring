@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.YCFengZi.mapper.ProductMapper">
+    <select id="findByIdProduct" resultType="net.YCFengZi.pojo.Product">
+        select * from product
+        <where>
+            <if test="id != null and id != '' ">
+                id=#{id}
+            </if>
+        </where>
+    </select>
+    <!--    <select id="findByTypeIdProduct" resultType="net.YCFengZi.pojo.product">-->
+    <!--        select * from product-->
+    <!--        <where>-->
+    <!--            <if test="typeId != null and typeId != '' ">-->
+    <!--                typeid=#{typeId}-->
+    <!--            </if>-->
+    <!--        </where>-->
+    <!--    </select>-->
+    <select id="findByGoodsNameProduct" resultType="net.YCFengZi.pojo.Product">
+        select * from product
+        <where>
+            <if test="name != null and name != '' ">
+                goodsname like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+    <update id="updateProduct">
+        update product
+        <set>
+            <if test="goodsName != null and goodsName != '' ">
+                goodsname = #{goodsName},
+                price = #{price}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+    <delete id="deleteProduct">
+        delete from product
+        <where>
+            <if test="id != null and id != '' ">
+                id=#{id}
+            </if>
+        </where>
+    </delete>
+    <insert id="addProduct">
+        insert into product(id, goodsname, price, typeid)
+        values (#{id}, #{goodsName}, #{price}, #{typeId})
+    </insert>
+
+    <resultMap id="findCategory" type="net.YCFengZi.pojo.Product">
+        <id property="id" column="id" />
+        <result property="goodsName" column="goodsname" />
+        <result property="price" column="price" />
+        <result property="typeId" column="typeid" />
+        <association property="Category" column="typeid" javaType="net.YCFengZi.pojo.Category"
+                     select="net.YCFengZi.mapper.CategoryMapper.findByTypename"/>
+    </resultMap>
+    <select id="findByTypeName" resultMap="findCategory">
+        select * from product where goodsname = #{name}
+    </select>
+
+    <!--    <select id="findByTypeName" resultType="net.YCFengZi.pojo.product">-->
+    <!--        select * from product where goodsname = #{name}-->
+    <!--    </select>-->
+
+    <select id="findIdByTypeId" resultType="net.YCFengZi.pojo.Product">
+        select * from product where typeid = #{id}
+    </select>
+</mapper>
